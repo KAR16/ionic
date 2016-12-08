@@ -8,11 +8,22 @@ export class ImgLoader {
 
   load(src: string, cache: boolean, callback: Function) {
     if (src) {
+
+      var absSrc = src;
+      if (absSrc.indexOf('.') === 0) {
+        console.error(`ion-img error: ${absSrc}`);
+        console.error(`ion-img src relative requests must start with "/"`);
+
+      } else if (absSrc.indexOf('/') === 0) {
+        absSrc = window.location.origin + absSrc;
+      }
+
       (<any>callback).id = this.ids++;
       this.callbacks.push(callback);
       this.worker().postMessage(JSON.stringify({
         id: (<any>callback).id,
         src: src,
+        absSrc: absSrc,
         cache: cache
       }));
     }
@@ -123,7 +134,7 @@ const INLINE_WORKER = `/** minify-start **/
       }
 
       imgData.x = new XMLHttpRequest();
-      imgData.x.open('GET', src, true);
+      imgData.x.open('GET', msgData.absSrc, true);
       imgData.x.responseType = 'arraybuffer';
       imgData.x.addEventListener('load', function(ev) {
         onXhrLoad(id, src, imgData, ev);
