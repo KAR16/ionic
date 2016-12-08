@@ -9,10 +9,9 @@ export class ImgLoader {
   load(src: string, cache: boolean, callback: Function) {
     if (src) {
 
-      var absSrc = src;
+      var absSrc = src.trim();
       if (absSrc.indexOf('.') === 0) {
-        console.error(`ion-img error: ${absSrc}`);
-        console.error(`ion-img src relative requests must start with "/"`);
+        console.error(`ion-img src error: "${absSrc}"\nrelative requests must start with "/"`);
 
       } else if (absSrc.indexOf('/') === 0) {
         absSrc = window.location.origin + absSrc;
